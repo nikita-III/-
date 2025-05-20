@@ -1,0 +1,243 @@
+#include <iostream>
+#include <fstream>
+#include <vector>
+#include <string>
+#include <stack>
+#include <stdio.h>
+#include <algorithm>
+#include <ctime>
+#include <cmath>
+#include <numeric>
+#include <queue>
+#include <map>
+#include <chrono>
+#include <cstdlib>
+#include <iomanip>
+#include <set>
+#include <functional>
+#include <cstdio>
+#include <deque>
+using namespace std;
+typedef unsigned long long ull;
+typedef long long ll;
+//#define first f;
+//#define second s;
+//typedef pair<typename, typename>::first_type f;
+
+string sreverse(string s)
+{
+	for (auto i = 0; i < s.size() / 2; i++)
+		swap(s[i], s[s.size() - i - 1]);
+	return s;
+}
+
+vector<int> vreverse(vector<int>& s)
+{
+	for (auto i = 0; i < s.size() / 2; i++)
+		swap(s[i], s[s.size() - i - 1]);
+	return s;
+}
+
+/*bool c(vector<int> a, vector<int> b)
+{
+	return a < b;
+}*/
+
+bool evgre(vector<int> va, vector<int> vb)
+{
+	if (va.size() > vb.size())
+		return 1;
+	if (va.size() < vb.size())
+		return 0;
+	if (va.size() == vb.size())
+	{
+		vreverse(va);
+		vreverse(vb);
+		while (!va.empty())
+		{
+			if (va.back() > vb.back())
+				return 1;
+			if (va.back() < vb.back())
+				return 0;
+			va.pop_back();
+			vb.pop_back();
+		}
+		return 0;
+	}
+}
+
+bool evequ(vector<int> va, vector<int> vb)
+{
+	if (va.size() != vb.size())
+		return 0;
+	else
+	{
+		while (!va.empty())
+		{
+			if (va.back() != vb.back())
+				return 0;
+		}
+		return 1;
+	}
+}
+
+void ErathosphenesSieve(int n, vector<int>& result)
+{
+	result.clear();
+	int i = 0, k = 2;
+	int* a = new int[n];
+	bool* b = new bool[n];
+	for (i = 0; i < n; i++)
+	{
+		a[i] = i;
+	}
+	for (i = 0; i < n; i++)
+	{
+		b[i] = true;
+	}
+	while (k * k <= n)
+	{
+		if (b[k])
+		{
+			for (i = k * k; i < n; i += k)
+			{
+				b[i] = false;
+			}
+		}
+		k++;
+	}
+	for (i = 0; i < n; i++)
+	{
+		if (b[i] == true)
+		{
+			result.push_back(a[i]);
+		}
+	}
+}
+
+ull binpow(ull a, ull n) {
+	ull res = 1;
+	while (n) {
+		if (n & 1)
+			res *= a;
+		a *= a;
+		n >>= 1;
+	}
+	return res;
+}
+
+double area(pair<double, double> p1, pair<double, double> p2)
+{
+	return (fabs(p1.first - p2.first))*((p1.second + p2.second)/2.);
+}
+
+int gcd(int a, int b) {
+	while (b) {
+		a %= b;
+		swap(a, b);
+	}
+	return a;
+}
+
+int lcm(int a, int b) {
+	return a / gcd(a, b) * b;
+}
+
+ll gcd(ll a, ll b)
+{
+	if (b == 0)
+		return a;
+	return gcd(b, a % b);
+}
+
+void nextper(string &s)
+{
+	ll i = s.size() - 2;
+	while (i > -1 && s[i]>=s[i+1])
+	{
+		i--;
+	}
+	if (i == -1)
+	{
+		return;
+	}
+	ll j = i + 1;
+	while (j<s.size() && s[j] != s[i] + 1)
+		j++;
+	swap(s[i], s[j]);
+	reverse(s.begin() + i + 1, s.end());
+}
+
+void strpai(ll n, ll m, ll x0, ll y0, ll c0, vector<vector<ll>> &A)
+{
+	ll cuc = A[y0][x0], l, r;
+	queue<pair<ll, ll>> q;
+	q.push({ y0, x0 });
+	while (!q.empty())
+	{
+		y0 = q.front().first;
+		x0 = q.front().second;
+		q.pop();
+		if (A[y0][x0] == c0)
+		{
+			continue;
+		}
+		for (l = x0; l > -1 && A[y0][l] == cuc; l--)
+		{
+			A[y0][l] = c0;
+		}
+		l++;
+		for (r = x0 + 1; r < m && A[y0][r] == cuc; r++)
+		{
+			A[y0][r] = c0;
+		}
+		r--;
+		for (; l < x0 && l < m; l++)
+		{
+			if (y0 + 1 < n && A[y0 + 1][l] == cuc)
+				q.push({ y0 + 1, l });
+			if (y0 > 0 && A[y0 - 1][l] == cuc)
+				q.push({ y0 - 1, l });
+		}
+		for (; r >= x0 && r > -1; r--)
+		{
+			if (y0 + 1 < n && A[y0 + 1][r] == cuc)
+				q.push({ y0 + 1, r });
+			if (y0 > 0 && A[y0 - 1][r] == cuc)
+				q.push({ y0 - 1, r });
+		}
+	}
+}
+
+int main()
+{
+	//setlocale(LC_ALL, "Russian");
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
+	ifstream in("INPUT.TXT");
+	ofstream out("OUTPUT.TXT");
+
+	ll n, m, l, x0, y0, c0, cuc, r;
+	in >> n >> m >> x0 >> y0 >> c0;
+	vector<vector<ll>> A (n, vector<ll>(m));
+	for (auto i = 0; i < n; i++)
+	{
+		for (auto j = 0; j < m; j++)
+		{
+			in >> A[i][j];
+		}
+	}
+	strpai(n, m, x0, y0, c0, A);
+	for (auto i = 0; i < n; i++)
+	{
+		for (auto j = 0; j < m; j++)
+		{
+			out << A[i][j];
+		}
+		out << '\n';
+	}
+
+	in.close();
+	out.close();
+	return 0;
+}
